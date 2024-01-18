@@ -17,18 +17,20 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public List<Player> findAll(){
+    public List<Player> findAll() {
         return playerRepository.findAll();
     }
 
-    public Player findById(Long id) throws RuntimeException{
+    public Player findById(Long id) throws RuntimeException {
         Optional<Player> obj = playerRepository.findById(id);
-        if(obj.isPresent()){
+        if (obj.isPresent()) {
             return obj.get();
         } else {
-            throw new RuntimeException( "Player não encontrado");
+            throw new RuntimeException("Player não encontrado");
         }
-        
     }
-    
+
+    public void deletePlayer(Long id) {
+        playerRepository.deleteById(id);
+    }
 }
