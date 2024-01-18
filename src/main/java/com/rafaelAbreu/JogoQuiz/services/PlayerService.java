@@ -1,6 +1,9 @@
 package com.rafaelAbreu.JogoQuiz.services;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,16 @@ public class PlayerService {
 
     public List<Player> findAll(){
         return playerRepository.findAll();
+    }
+
+    public Player findById(Long id) throws RuntimeException{
+        Optional<Player> obj = playerRepository.findById(id);
+        if(obj.isPresent()){
+            return obj.get();
+        } else {
+            throw new RuntimeException( "Player não encontrado");
+        }
+        
     }
     
 }
