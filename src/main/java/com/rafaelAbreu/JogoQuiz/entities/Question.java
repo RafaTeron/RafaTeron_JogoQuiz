@@ -7,6 +7,8 @@ import com.rafaelAbreu.JogoQuiz.entities.enums.Category;
 
 import java.util.List;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,6 +25,8 @@ public class Question implements Serializable {
 
     private String questionText;
     private List<String> options;
+    
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     public Question() {
