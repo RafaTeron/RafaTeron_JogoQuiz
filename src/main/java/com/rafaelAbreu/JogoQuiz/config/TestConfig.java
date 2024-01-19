@@ -20,8 +20,8 @@ public class TestConfig  implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
          
-        Player p1 = new Player(null,"Rafael");
-        Player p2 = new Player(null,"Thayna");
+        Player p1 = new Player(null,"Rafael",0);
+        Player p2 = new Player(null,"Thayna",0);
 
         playerRepository.saveAll(Arrays.asList(p1,p2));
     }

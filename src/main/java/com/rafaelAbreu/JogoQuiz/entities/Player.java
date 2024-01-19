@@ -19,13 +19,16 @@ public class Player implements Serializable {
     private Long id;
     private String name;
 
+    private Integer pointScore;
+
     public Player(){
         
     }
  
-    public Player(Long id,String name){
+    public Player(Long id,String name, Integer pointScore){
         this.id = id;
         this.name = name;
+        this.pointScore = pointScore;
     }
 
     public Long getId() {
@@ -38,6 +41,14 @@ public class Player implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getPointScore() {
+        return pointScore;
+    }
+
+    public void setPointScore(Integer pointScore) {
+        this.pointScore = pointScore;
     }
 
     @Override
@@ -56,6 +67,4 @@ public class Player implements Serializable {
 		Player other = (Player) obj;
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
-
-
 }
