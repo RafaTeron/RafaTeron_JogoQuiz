@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import com.rafaelAbreu.JogoQuiz.entities.enums.Category;
 
+import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,15 +22,17 @@ public class Question implements Serializable {
     private Long id;
 
     private String questionText;
+    private List<String> options;
     private Category category;
 
     public Question() {
 
     }
 
-    public Question(Long id, String questionText, Category category) {
+    public Question(Long id, String questionText,List<String> options, Category category) {
         this.id = id;
         this.questionText = questionText;
+        this.options = options;
         this.category = category;
     }
 
@@ -41,8 +44,16 @@ public class Question implements Serializable {
         return questionText;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<String> options) {
+        this.options = options;
     }
 
     public Category getCategory() {
