@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import com.rafaelAbreu.JogoQuiz.entities.enums.Category;
 
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,10 +24,13 @@ public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private boolean isCorrect;
 
     private String questionText;
-    private List<String> options;
     
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -33,15 +38,22 @@ public class Question implements Serializable {
 
     }
 
-    public Question(Long id, String questionText,List<String> options, Category category) {
+    public Question(Long id, String questionText, Category category ) {
         this.id = id;
         this.questionText = questionText;
-        this.options = options;
         this.category = category;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public boolean getIsCorrect() {
+        return isCorrect;
+    }
+
+    public void setIsCorrect(boolean correct) {
+        isCorrect = correct;
     }
 
     public String getQuestionText() {
@@ -52,13 +64,13 @@ public class Question implements Serializable {
         this.questionText = questionText;
     }
 
-    public List<String> getOptions() {
-        return options;
-    }
+   public List<Answer> getAnswers() {
+       return answers;
+   }
 
-    public void setOptions(List<String> options) {
-        this.options = options;
-    }
+   public void setAnswers(List<Answer> answers) {
+       this.answers = answers;
+   }
 
     public Category getCategory() {
         return category;

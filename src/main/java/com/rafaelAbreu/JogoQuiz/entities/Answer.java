@@ -3,10 +3,14 @@ package com.rafaelAbreu.JogoQuiz.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,16 +23,20 @@ public class Answer implements Serializable {
     private Long id;
 
     private String answerText;
-    private boolean isCorrect;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private Question question;
 
     public Answer() {
 
     }
 
-    public Answer(Long id, String answerText, boolean isCorrect) {
+    public Answer(Long id, String answerText, Question question) {
         this.id = id;
         this.answerText = answerText;
-        this.isCorrect = isCorrect;
+        this.question = question;
     }
 
     public Long getId() {
@@ -43,12 +51,12 @@ public class Answer implements Serializable {
         this.answerText = answerText;
     }
 
-    public boolean getIsCorrect() {
-        return isCorrect;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setIsCorrect(boolean correct) {
-        isCorrect = correct;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     @Override
