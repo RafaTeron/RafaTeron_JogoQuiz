@@ -3,6 +3,7 @@ package com.rafaelAbreu.JogoQuiz.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rafaelAbreu.JogoQuiz.entities.enums.Category;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -24,10 +27,13 @@ public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean isCorrect;
-
     private String questionText;
-    
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "player_id")
+    private Player player;
+
     @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();
 
@@ -38,23 +44,16 @@ public class Question implements Serializable {
 
     }
 
-    public Question(Long id, String questionText, Category category ) {
+    public Question(Long id, String questionText, Category category, Player player) {
         this.id = id;
         this.questionText = questionText;
         this.category = category;
+        this.player = player;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public boolean getIsCorrect() {
-        return isCorrect;
-    }
-
-    public void setIsCorrect(boolean correct) {
-        isCorrect = correct;
-    }
+    }  
 
     public String getQuestionText() {
         return questionText;
@@ -78,6 +77,14 @@ public class Question implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     @Override

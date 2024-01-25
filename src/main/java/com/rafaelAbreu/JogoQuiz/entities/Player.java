@@ -1,12 +1,15 @@
 package com.rafaelAbreu.JogoQuiz.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,13 +22,16 @@ public class Player implements Serializable {
     private Long id;
     private String name;
 
+    @OneToMany(mappedBy = "player")
+    private List<Question> question = new ArrayList<>();
+
     private Integer pointScore;
 
-    public Player(){
-        
+    public Player() {
+
     }
- 
-    public Player(Long id,String name, Integer pointScore){
+
+    public Player(Long id, String name, Integer pointScore) {
         this.id = id;
         this.name = name;
         this.pointScore = pointScore;
@@ -51,20 +57,28 @@ public class Player implements Serializable {
         this.pointScore = pointScore;
     }
 
-    @Override
-	public int hashCode() {
-		return Objects.hash(id, name);
-	}
+    public List<Question> getQuestion() {
+        return question;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Player other = (Player) obj;
-		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
-	}
+    public void setQuestion(List<Question> question) {
+        this.question = question;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Player other = (Player) obj;
+        return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+    }
 }
