@@ -3,7 +3,6 @@ package com.rafaelAbreu.JogoQuiz.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,11 +58,20 @@ public class PlayerService {
         if (playerOptional.isPresent() ) {
             Player player = playerOptional.get();
 
+            List<Player> players = new ArrayList<>();
             List<Question> listQuestions = new ArrayList<>();
-            Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();
+            Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();          
+            players.add(player);
+            questionAleatoria.setPlayers(players);
+            
             listQuestions.add(questionAleatoria);
             player.setQuestion(listQuestions);
+            
+            questionRepository.save(questionAleatoria);
+            
             playerRepository.save(player);
+            System.out.println(listQuestions.get(0).getQuestionText());
+
         }
     }
 

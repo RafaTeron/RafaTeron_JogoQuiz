@@ -1,13 +1,14 @@
 package com.rafaelAbreu.JogoQuiz.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rafaelAbreu.JogoQuiz.entities.enums.Category;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,11 +30,17 @@ public class Question implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String questionText;
+    
+    @JsonIgnore
+    @ManyToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+    private List<Player> players = new ArrayList<>();
+
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "player_id")
     private Player player;
+
 
     @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();
@@ -44,11 +52,12 @@ public class Question implements Serializable {
 
     }
 
-    public Question(Long id, String questionText, Category category, Player player) {
+
+    public Question(Long id, String questionText, Category category, List<Player> players) {
         this.id = id;
         this.questionText = questionText;
         this.category = category;
-        this.player = player;
+        this.players = players;
     }
 
     public Long getId() {
@@ -79,6 +88,15 @@ public class Question implements Serializable {
         this.category = category;
     }
 
+
+    public List<Player> getPlayers() {
+		return players;
+	}
+    
+    public void setPlayers(List<Player> players) {
+		this.players = players;
+	}
+
     public Player getPlayer() {
         return player;
     }
@@ -86,6 +104,7 @@ public class Question implements Serializable {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
 
     @Override
     public int hashCode() {
