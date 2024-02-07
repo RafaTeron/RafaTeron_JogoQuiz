@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rafaelAbreu.JogoQuiz.entities.Answer;
 import com.rafaelAbreu.JogoQuiz.entities.Player;
 import com.rafaelAbreu.JogoQuiz.entities.Question;
 import com.rafaelAbreu.JogoQuiz.repositories.PlayerRepository;
@@ -63,6 +64,20 @@ public class PlayerService {
                 playerRepository.save(player);
             }
         }
+    }
+
+    public boolean conferirResposta(Long id, Player player, int opcao){
+        Optional<Player> playerOptional = playerRepository.findById(id);
+
+        if (playerOptional.isPresent()) {
+            player = playerOptional.get();
+            List<Answer> answerList = player.getQuestion().get(0).getAnswers();
+            for (int i=0 ) {
+                
+            }
+
+        }    
+        return true;
     }
 
     public void somarScore() {
