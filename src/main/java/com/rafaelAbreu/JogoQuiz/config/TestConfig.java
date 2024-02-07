@@ -32,7 +32,7 @@ public class TestConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        /*Player p1 = new Player(null, "Rafael", 0);
+        Player p1 = new Player(null, "Rafael", 0);
         Player p2 = new Player(null, "Thayna", 0);
 
         playerRepository.saveAll(Arrays.asList(p1, p2));
@@ -40,7 +40,7 @@ public class TestConfig implements CommandLineRunner {
         
 
         Question q1 = new Question(null, "Qual é o elemento mais abundante na crosta terrestre?",
-                Category.CIENCIA, p1);
+                Category.CIENCIA, null);
         Question q2 = new Question(null,"Qual jogador de futebol brasileiro é frequentemente chamado de 'O Fenômeno'?",Category.ESPORTE, null);
 
         questionRepository.saveAll(Arrays.asList(q1,q2));
@@ -57,7 +57,7 @@ public class TestConfig implements CommandLineRunner {
         List<Answer> op2 = answerRepository.saveAll(Arrays.asList(a4, a5, a6));
 
         q1.getAnswers().addAll(op1);
-        q2.getAnswers().addAll(op2);*/
+        q2.getAnswers().addAll(op2);
 
     }
 

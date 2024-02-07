@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rafaelAbreu.JogoQuiz.entities.Player;
-import com.rafaelAbreu.JogoQuiz.entities.Question;
 import com.rafaelAbreu.JogoQuiz.services.PlayerService;
 
 @RestController
@@ -55,8 +54,8 @@ public class PlayerResources {
     }
 
     @PostMapping(value = "/{id}/gerarQuestion")
-    public ResponseEntity<Void> gerarQuestionParaPlayer(@PathVariable Long id){
+    public ResponseEntity<String> gerarQuestionParaPlayer(@PathVariable Long id){
         playerService.gerarQuestionParaPlayer(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Sucesso!");
     }
 }

@@ -55,23 +55,13 @@ public class PlayerService {
     public void gerarQuestionParaPlayer(Long id) {
         Optional<Player> playerOptional = playerRepository.findById(id);
 
-        if (playerOptional.isPresent() ) {
+        if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
-
-            List<Player> players = new ArrayList<>();
-            List<Question> listQuestions = new ArrayList<>();
-            Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();          
-            players.add(player);
-            questionAleatoria.setPlayers(players);
             
-            listQuestions.add(questionAleatoria);
-            player.setQuestion(listQuestions);
-            
-            questionRepository.save(questionAleatoria);
-            
-            playerRepository.save(player);
-            System.out.println(listQuestions.get(0).getQuestionText());
-
+            if (verificarPlayerQuestionVazio(player)) {
+                alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
+                playerRepository.save(player);
+            }
         }
     }
 
@@ -79,11 +69,24 @@ public class PlayerService {
 
     }
 
-    protected boolean playerQuestionVazio(Player player){
+    protected void alterar_E_Salvar_QuestionAleatoriaAoPlayer(Player player) {
+        List<Question> listQuestions = new ArrayList<>();
+        Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();
+        List<Player> players = new ArrayList<>();
+        players.add(player);
+        questionAleatoria.setPlayers(players);
+        listQuestions.add(questionAleatoria);
+        player.setQuestion(listQuestions);
+        questionRepository.save(questionAleatoria);
+    }
+
+    protected boolean verificarPlayerQuestionVazio(Player player) {
         if (player.getQuestion() == null || player.getQuestion().isEmpty()) {
             return true;
+        } else {
+            player.getQuestion().remove(0);
+            return true;
         }
-        return false;
     }
 
 }
