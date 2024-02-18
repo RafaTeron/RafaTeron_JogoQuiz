@@ -75,6 +75,7 @@ public class PlayerService {
             if(opcao > 0 && opcao <= answerList.size()) {
             	Answer answerEscolhida = answerList.get(opcao - 1);
             	if(answerEscolhida.getIsCorrect() == true) {
+            		somarScore(player);
             		return true;
             	}
             }
@@ -82,8 +83,9 @@ public class PlayerService {
         return false;
     }
 
-    public void somarScore() {
-
+    public void somarScore(Player player) {    
+        player.setPointScore(player.getPointScore() + 10);
+        playerRepository.save(player);
     }
 
     protected void alterar_E_Salvar_QuestionAleatoriaAoPlayer(Player player) {
