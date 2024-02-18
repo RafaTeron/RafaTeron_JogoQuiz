@@ -10,102 +10,107 @@ import org.springframework.stereotype.Service;
 import com.rafaelAbreu.JogoQuiz.entities.Answer;
 import com.rafaelAbreu.JogoQuiz.entities.Player;
 import com.rafaelAbreu.JogoQuiz.entities.Question;
+import com.rafaelAbreu.JogoQuiz.exceptions.ErroScoreException;
 import com.rafaelAbreu.JogoQuiz.repositories.PlayerRepository;
 import com.rafaelAbreu.JogoQuiz.repositories.QuestionRepository;
 
 @Service
 public class PlayerService {
 
-    @Autowired
-    private PlayerRepository playerRepository;
+	@Autowired
+	private PlayerRepository playerRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
+	@Autowired
+	private QuestionRepository questionRepository;
 
-    public List<Player> findAll() {
-        return playerRepository.findAll();
-    }
+	public List<Player> findAll() {
+		return playerRepository.findAll();
+	}
 
-    public Player findById(Long id) throws RuntimeException {
-        Optional<Player> obj = playerRepository.findById(id);
-        if (obj.isPresent()) {
-            return obj.get();
-        } else {
-            throw new RuntimeException("Player não encontrado");
-        }
-    }
+	public Player findById(Long id) throws RuntimeException {
+		Optional<Player> obj = playerRepository.findById(id);
+		if (obj.isPresent()) {
+			return obj.get();
+		} else {
+			throw new RuntimeException("Player não encontrado");
+		}
+	}
 
-    public Player insert(Player player) {
-        return playerRepository.save(player);
-    }
+	public Player insert(Player player) {
+		return playerRepository.save(player);
+	}
 
-    public void deletePlayer(Long id) {
-        playerRepository.deleteById(id);
-    }
+	public void deletePlayer(Long id) {
+		playerRepository.deleteById(id);
+	}
 
-    public Player update(Long id, Player player) {
-        Player entity = playerRepository.getReferenceById(id);
-        updateDaTa(entity, player);
-        return playerRepository.save(entity);
-    }
+	public Player update(Long id, Player player) {
+		Player entity = playerRepository.getReferenceById(id);
+		updateDaTa(entity, player);
+		return playerRepository.save(entity);
+	}
 
-    protected void updateDaTa(Player entity, Player player) {
-        entity.setName(player.getName());
-    }
+	protected void updateDaTa(Player entity, Player player) {
+		entity.setName(player.getName());
+	}
 
-    public void gerarQuestionParaPlayer(Long id) {
-        Optional<Player> playerOptional = playerRepository.findById(id);
+	public void gerarQuestionParaPlayer(Long id) {
+		Optional<Player> playerOptional = playerRepository.findById(id);
 
-        if (playerOptional.isPresent()) {
-            Player player = playerOptional.get();
-            
-            if (verificarPlayerQuestionVazio(player)) {
-                alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
-                playerRepository.save(player);
-            }
-        }
-    }
+		if (playerOptional.isPresent()) {
+			Player player = playerOptional.get();
 
-    public boolean conferirResposta(Long id, int opcao){
-        Optional<Player> playerOptional = playerRepository.findById(id);
+			if (verificarPlayerQuestionVazio(player)) {
+				alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
+				playerRepository.save(player);
+			}
+		}
+	}
 
-        if (playerOptional.isPresent()) {
-        	Player player = playerOptional.get();
-            List<Answer> answerList = player.getQuestion().get(0).getAnswers();
-            if(opcao > 0 && opcao <= answerList.size()) {
-            	Answer answerEscolhida = answerList.get(opcao - 1);
-            	if(answerEscolhida.getIsCorrect() == true) {
-            		somarScore(player);
-            		return true;
-            	}
-            }
-        }    
-        return false;
-    }
+	public boolean conferirResposta(Long id, int opcao) throws ErroScoreException {
+		Optional<Player> playerOptional = playerRepository.findById(id);
 
-    public void somarScore(Player player) {    
-        player.setPointScore(player.getPointScore() + 10);
-        playerRepository.save(player);
-    }
+		if (playerOptional.isPresent()) {
+			Player player = playerOptional.get();
+			List<Answer> answerList = player.getQuestion().get(0).getAnswers();
+			if (opcao > 0 && opcao <= answerList.size()) {
+				Answer answerEscolhida = answerList.get(opcao - 1);
+				if (answerEscolhida.getIsCorrect() == true) {
+					somarScore(player);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    protected void alterar_E_Salvar_QuestionAleatoriaAoPlayer(Player player) {
-        List<Question> listQuestions = new ArrayList<>();
-        Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();
-        List<Player> players = new ArrayList<>();
-        players.add(player);
-        questionAleatoria.setPlayers(players);
-        listQuestions.add(questionAleatoria);
-        player.setQuestion(listQuestions);
-        questionRepository.save(questionAleatoria);
-    }
+	public void somarScore(Player player) throws ErroScoreException {
+		if (player.getPointScore() < 100) {
+			player.setPointScore(player.getPointScore() + 10);
+			playerRepository.save(player);
+		} else {
+			throw new ErroScoreException("Pontuação maxima!");
+		}
+	}
 
-    protected boolean verificarPlayerQuestionVazio(Player player) {
-        if (player.getQuestion() == null || player.getQuestion().isEmpty()) {
-            return true;
-        } else {
-            player.getQuestion().remove(0);
-            return true;
-        }
-    }
+	protected void alterar_E_Salvar_QuestionAleatoriaAoPlayer(Player player) {
+		List<Question> listQuestions = new ArrayList<>();
+		Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();
+		List<Player> players = new ArrayList<>();
+		players.add(player);
+		questionAleatoria.setPlayers(players);
+		listQuestions.add(questionAleatoria);
+		player.setQuestion(listQuestions);
+		questionRepository.save(questionAleatoria);
+	}
+
+	protected boolean verificarPlayerQuestionVazio(Player player) {
+		if (player.getQuestion() == null || player.getQuestion().isEmpty()) {
+			return true;
+		} else {
+			player.getQuestion().remove(0);
+			return true;
+		}
+	}
 
 }

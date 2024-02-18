@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rafaelAbreu.JogoQuiz.entities.Player;
+import com.rafaelAbreu.JogoQuiz.exceptions.ErroScoreException;
 import com.rafaelAbreu.JogoQuiz.services.PlayerService;
 
 @RestController
@@ -54,7 +55,7 @@ public class PlayerResources {
     }
     
     @GetMapping(value ="/{id}/conferirResposta")
-    public ResponseEntity<String> conferirResposta(@PathVariable Long id,@RequestBody int opcao){		
+    public ResponseEntity<String> conferirResposta(@PathVariable Long id,@RequestBody int opcao) throws ErroScoreException{		
     	if(playerService.conferirResposta(id, opcao)) {
 		   return ResponseEntity.ok("Resposta certa!");
     	} else {
