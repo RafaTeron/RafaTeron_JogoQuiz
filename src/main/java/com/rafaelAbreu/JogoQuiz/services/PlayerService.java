@@ -66,18 +66,20 @@ public class PlayerService {
         }
     }
 
-    public boolean conferirResposta(Long id, Player player, int opcao){
+    public boolean conferirResposta(Long id, int opcao){
         Optional<Player> playerOptional = playerRepository.findById(id);
 
         if (playerOptional.isPresent()) {
-            player = playerOptional.get();
+        	Player player = playerOptional.get();
             List<Answer> answerList = player.getQuestion().get(0).getAnswers();
-            for (int i=0 ) {
-                
+            if(opcao > 0 && opcao <= answerList.size()) {
+            	Answer answerEscolhida = answerList.get(opcao - 1);
+            	if(answerEscolhida.getIsCorrect() == true) {
+            		return true;
+            	}
             }
-
         }    
-        return true;
+        return false;
     }
 
     public void somarScore() {

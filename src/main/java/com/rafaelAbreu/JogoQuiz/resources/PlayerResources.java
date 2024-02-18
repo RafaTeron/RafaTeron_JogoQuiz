@@ -52,6 +52,15 @@ public class PlayerResources {
         player = playerService.update(id, player);
         return ResponseEntity.ok().body(player);
     }
+    
+    @GetMapping(value ="/{id}/conferirResposta")
+    public ResponseEntity<String> conferirResposta(@PathVariable Long id,@RequestBody int opcao){		
+    	if(playerService.conferirResposta(id, opcao)) {
+		   return ResponseEntity.ok("Resposta certa!");
+    	} else {
+ 		   return ResponseEntity.ok("Resposta errado!");
+    	}
+    }
 
     @PostMapping(value = "/{id}/gerarQuestion")
     public ResponseEntity<String> gerarQuestionParaPlayer(@PathVariable Long id){
