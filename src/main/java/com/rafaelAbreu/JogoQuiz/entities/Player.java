@@ -31,11 +31,13 @@ public class Player implements Serializable {
         joinColumns = @JoinColumn(name = "player_id"),
         inverseJoinColumns = @JoinColumn(name = "question_id"))
     private List<Question> question = new ArrayList<>();
+    
+    private List<String> questionRespondidas;
 
     private Integer pointScore;
 
     public Player() {
-
+        this.questionRespondidas = new ArrayList<>();
     }
 
     public Player(Long id, String name, Integer pointScore) {
@@ -72,6 +74,14 @@ public class Player implements Serializable {
         this.question = question;
     }
 
+    public List<String> getQuestionRespondidas() {
+		return questionRespondidas;
+	}
+    
+    public void setQuestionRespondidas(List<String> questionRespondidas) {
+		this.questionRespondidas = questionRespondidas;
+	}
+    
     @Override
     public int hashCode() {
         return Objects.hash(id, name);

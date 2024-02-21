@@ -56,13 +56,12 @@ public class PlayerService {
 
 	public void gerarQuestionParaPlayer(Long id) {
 		Optional<Player> playerOptional = playerRepository.findById(id);
-
 		if (playerOptional.isPresent()) {
 			Player player = playerOptional.get();
 
 			if (verificarPlayerQuestionVazio(player)) {
 				alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
-				playerRepository.save(player);
+				salvarQuestionRespondida(player);
 			}
 		}
 	}
@@ -84,6 +83,26 @@ public class PlayerService {
 		return false;
 	}
 
+	protected void salvarQuestionRespondida(Player player) {
+		if (!player.getQuestion().isEmpty()) {
+			String textoQuestion = player.getQuestion().get(0).getQuestionText();
+
+			if (player.getQuestionRespondidas() == null) {
+				player.setQuestionRespondidas(new ArrayList<>());
+			}
+			for (int i = 0; i < player.getQuestionRespondidas().size(); i++) {
+				if (!player.getQuestionRespondidas().isEmpty())
+					if (player.getQuestionRespondidas().get(i).equals(textoQuestion)) {
+						do {
+							alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
+						} while (player.getQuestionRespondidas().get(i).equals(textoQuestion));
+					}
+			}
+			player.getQuestionRespondidas().add(textoQuestion);
+			playerRepository.save(player);
+		}
+	}
+
 	public void somarScore(Player player) throws ErroScoreException {
 		if (player.getPointScore() < 100) {
 			player.setPointScore(player.getPointScore() + 10);
@@ -95,7 +114,12 @@ public class PlayerService {
 
 	protected void alterar_E_Salvar_QuestionAleatoriaAoPlayer(Player player) {
 		List<Question> listQuestions = new ArrayList<>();
-		Question questionAleatoria = questionRepository.encontrarQuestionAleatoria();
+		Question questionAleatoria;
+
+	    do {
+	        questionAleatoria = questionRepository.encontrarQuestionAleatoria(); // Obtém uma pergunta aleatória
+	    } while (jaFoiRespondida(player, questionAleatoria)); // Verifica se já foi respondida
+
 		List<Player> players = new ArrayList<>();
 		players.add(player);
 		questionAleatoria.setPlayers(players);
@@ -111,6 +135,14 @@ public class PlayerService {
 			player.getQuestion().remove(0);
 			return true;
 		}
+	}
+	
+	protected boolean jaFoiRespondida(Player player, Question question) {
+	    List<String> perguntasRespondidas = player.getQuestionRespondidas();
+	    if (perguntasRespondidas != null && !perguntasRespondidas.isEmpty()) {
+	        return perguntasRespondidas.contains(question.getQuestionText());
+	    }
+	    return false;
 	}
 
 }
