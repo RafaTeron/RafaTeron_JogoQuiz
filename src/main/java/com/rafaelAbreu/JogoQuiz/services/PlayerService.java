@@ -56,11 +56,15 @@ public class PlayerService {
 
 	public void gerarQuestionParaPlayer(Long id) {
 		Optional<Player> playerOptional = playerRepository.findById(id);
+		
 		if (playerOptional.isPresent()) {
 			Player player = playerOptional.get();
 
 			if (verificarPlayerQuestionVazio(player)) {
-				alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
+				Question questionAleatoria = encontrarQuestionNaoRespondida(player); 
+
+				adicionarPerguntaAoJogador(player, questionAleatoria);
+				
 				salvarQuestionRespondida(player);
 			}
 		}
@@ -72,8 +76,10 @@ public class PlayerService {
 		if (playerOptional.isPresent()) {
 			Player player = playerOptional.get();
 			List<Answer> answerList = player.getQuestion().get(0).getAnswers();
+			
 			if (opcao > 0 && opcao <= answerList.size()) {
 				Answer answerEscolhida = answerList.get(opcao - 1);
+				
 				if (answerEscolhida.getIsCorrect() == true) {
 					somarScore(player);
 					return true;
@@ -89,45 +95,48 @@ public class PlayerService {
 
 			if (player.getQuestionRespondidas() == null) {
 				player.setQuestionRespondidas(new ArrayList<>());
-			}
-			for (int i = 0; i < player.getQuestionRespondidas().size(); i++) {
-				if (!player.getQuestionRespondidas().isEmpty())
-					if (player.getQuestionRespondidas().get(i).equals(textoQuestion)) {
-						do {
-							alterar_E_Salvar_QuestionAleatoriaAoPlayer(player);
-						} while (player.getQuestionRespondidas().get(i).equals(textoQuestion));
-					}
-			}
+			}	
+			
 			player.getQuestionRespondidas().add(textoQuestion);
 			playerRepository.save(player);
 		}
 	}
 
 	public void somarScore(Player player) throws ErroScoreException {
+		
 		if (player.getPointScore() < 100) {
 			player.setPointScore(player.getPointScore() + 10);
+			
 			playerRepository.save(player);
 		} else {
 			throw new ErroScoreException("Pontuação maxima!");
 		}
+		
 	}
 
-	protected void alterar_E_Salvar_QuestionAleatoriaAoPlayer(Player player) {
+	protected void adicionarPerguntaAoJogador(Player player, Question questionAleatoria) {
 		List<Question> listQuestions = new ArrayList<>();
-		Question questionAleatoria;
-
-	    do {
-	        questionAleatoria = questionRepository.encontrarQuestionAleatoria(); // Obtém uma pergunta aleatória
-	    } while (jaFoiRespondida(player, questionAleatoria)); // Verifica se já foi respondida
-
 		List<Player> players = new ArrayList<>();
+		
 		players.add(player);
 		questionAleatoria.setPlayers(players);
 		listQuestions.add(questionAleatoria);
+		
 		player.setQuestion(listQuestions);
 		questionRepository.save(questionAleatoria);
 	}
 
+	
+	protected Question encontrarQuestionNaoRespondida(Player player) {
+		Question questionAleatoria;
+
+	    do {
+	        questionAleatoria = questionRepository.encontrarQuestionAleatoria();
+	    } while (jaFoiRespondida(player, questionAleatoria));
+		return questionAleatoria;
+	}
+
+	
 	protected boolean verificarPlayerQuestionVazio(Player player) {
 		if (player.getQuestion() == null || player.getQuestion().isEmpty()) {
 			return true;
@@ -136,6 +145,7 @@ public class PlayerService {
 			return true;
 		}
 	}
+	
 	
 	protected boolean jaFoiRespondida(Player player, Question question) {
 	    List<String> perguntasRespondidas = player.getQuestionRespondidas();
