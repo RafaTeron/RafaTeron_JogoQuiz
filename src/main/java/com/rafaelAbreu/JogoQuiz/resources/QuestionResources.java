@@ -17,7 +17,7 @@ import com.rafaelAbreu.JogoQuiz.entities.Question;
 import com.rafaelAbreu.JogoQuiz.services.QuestionService;
 
 @RestController
-@RequestMapping(value = "/question")
+@RequestMapping(value = "/quiz/question")
 public class QuestionResources {
 
     @Autowired

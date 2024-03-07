@@ -56,16 +56,19 @@ public class PlayerService {
 
 	public void gerarQuestionParaPlayer(Long id) {
 		Optional<Player> playerOptional = playerRepository.findById(id);
-		
+
 		if (playerOptional.isPresent()) {
 			Player player = playerOptional.get();
 
 			if (verificarPlayerQuestionVazio(player)) {
-				Question questionAleatoria = encontrarQuestionNaoRespondida(player); 
 
-				adicionarPerguntaAoJogador(player, questionAleatoria);
-				
-				salvarQuestionRespondida(player);
+				if (limiteDeQuestionRespondida(player)) {
+					Question questionAleatoria = encontrarQuestionNaoRespondida(player);
+
+					adicionarPerguntaAoJogador(player, questionAleatoria);
+
+					salvarQuestionRespondida(player);
+				}
 			}
 		}
 	}
@@ -76,10 +79,10 @@ public class PlayerService {
 		if (playerOptional.isPresent()) {
 			Player player = playerOptional.get();
 			List<Answer> answerList = player.getQuestion().get(0).getAnswers();
-			
+
 			if (opcao > 0 && opcao <= answerList.size()) {
 				Answer answerEscolhida = answerList.get(opcao - 1);
-				
+
 				if (answerEscolhida.getIsCorrect() == true) {
 					somarScore(player);
 					return true;
@@ -95,64 +98,98 @@ public class PlayerService {
 
 			if (player.getQuestionRespondidas() == null) {
 				player.setQuestionRespondidas(new ArrayList<>());
-			}	
-			
+			}
+
 			player.getQuestionRespondidas().add(textoQuestion);
 			playerRepository.save(player);
 		}
 	}
 
+	protected boolean limiteDeQuestionRespondida(Player player) {
+		List<String> questionRespondidas = player.getQuestionRespondidas();
+
+		if (questionRespondidas == null) {
+			return true;
+		}
+
+		if (questionRespondidas.size() < 10) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public void somarScore(Player player) throws ErroScoreException {
-		
+
 		if (player.getPointScore() < 100) {
 			player.setPointScore(player.getPointScore() + 10);
-			
+
 			playerRepository.save(player);
 		} else {
 			throw new ErroScoreException("Pontuação maxima!");
 		}
-		
+
 	}
 
 	protected void adicionarPerguntaAoJogador(Player player, Question questionAleatoria) {
 		List<Question> listQuestions = new ArrayList<>();
 		List<Player> players = new ArrayList<>();
-		
+
 		players.add(player);
 		questionAleatoria.setPlayers(players);
 		listQuestions.add(questionAleatoria);
-		
+
 		player.setQuestion(listQuestions);
 		questionRepository.save(questionAleatoria);
 	}
 
-	
 	protected Question encontrarQuestionNaoRespondida(Player player) {
 		Question questionAleatoria;
 
-	    do {
-	        questionAleatoria = questionRepository.encontrarQuestionAleatoria();
-	    } while (jaFoiRespondida(player, questionAleatoria));
+		do {
+			questionAleatoria = questionRepository.encontrarQuestionAleatoria();
+		} while (jaFoiRespondida(player, questionAleatoria));
 		return questionAleatoria;
 	}
 
-	
 	protected boolean verificarPlayerQuestionVazio(Player player) {
 		if (player.getQuestion() == null || player.getQuestion().isEmpty()) {
 			return true;
 		} else {
-			player.getQuestion().remove(0);
+			player.getQuestion().clear();
 			return true;
 		}
 	}
-	
-	
+
+	public void resetarQuizPlayer(Long id) {
+		Optional<Player> playerOptional = playerRepository.findById(id);
+		if (playerOptional.isPresent()) {
+			Player player = playerOptional.get();
+
+			List<String> questionRespondidas = player.getQuestionRespondidas();
+			if (questionRespondidas != null && !questionRespondidas.isEmpty()) {
+				questionRespondidas.clear();
+			}
+
+			if (!player.getQuestion().isEmpty() && player.getQuestion() != null) {
+				player.getQuestion().clear();
+			}
+
+			if (player.getPointScore() != null) {
+				player.setPointScore(0);
+			}
+
+			playerRepository.save(player);
+		}
+	}
+
 	protected boolean jaFoiRespondida(Player player, Question question) {
-	    List<String> perguntasRespondidas = player.getQuestionRespondidas();
-	    if (perguntasRespondidas != null && !perguntasRespondidas.isEmpty()) {
-	        return perguntasRespondidas.contains(question.getQuestionText());
-	    }
-	    return false;
+		List<String> perguntasRespondidas = player.getQuestionRespondidas();
+
+		if (perguntasRespondidas != null && !perguntasRespondidas.isEmpty()) {
+			return perguntasRespondidas.contains(question.getQuestionText());
+		}
+		return false;
 	}
 
 }

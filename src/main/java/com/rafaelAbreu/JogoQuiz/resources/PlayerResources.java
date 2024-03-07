@@ -17,7 +17,7 @@ import com.rafaelAbreu.JogoQuiz.exceptions.ErroScoreException;
 import com.rafaelAbreu.JogoQuiz.services.PlayerService;
 
 @RestController
-@RequestMapping(value = "/players")
+@RequestMapping(value = "/quiz/players")
 public class PlayerResources {
     
     @Autowired
@@ -67,5 +67,11 @@ public class PlayerResources {
     public ResponseEntity<String> gerarQuestionParaPlayer(@PathVariable Long id){
         playerService.gerarQuestionParaPlayer(id);
         return ResponseEntity.ok("Sucesso!");
+    }
+    
+    @DeleteMapping("/{id}/reset-quiz")
+    public ResponseEntity<String> resetQuizPlayer(@PathVariable Long id) {
+        playerService.resetarQuizPlayer(id);
+        return ResponseEntity.noContent().build();
     }
 }
