@@ -55,12 +55,10 @@ public class PlayerResources {
     }
     
     @GetMapping(value ="/{id}/conferirResposta")
-    public ResponseEntity<String> conferirResposta(@PathVariable Long id,@RequestBody int opcao) throws ErroScoreException{		
-    	if(playerService.conferirResposta(id, opcao)) {
-		   return ResponseEntity.ok("Resposta certa!");
-    	} else {
- 		   return ResponseEntity.ok("Resposta errado!");
-    	}
+    public ResponseEntity<Boolean> conferirResposta(@PathVariable Long id, int opcao) throws ErroScoreException {
+        boolean respostaCorreta = playerService.conferirResposta(id, opcao);
+        
+        return ResponseEntity.ok(respostaCorreta);
     }
 
     @PostMapping(value = "/{id}/gerarQuestion")
