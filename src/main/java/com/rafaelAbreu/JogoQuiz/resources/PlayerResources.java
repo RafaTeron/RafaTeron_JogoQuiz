@@ -55,16 +55,16 @@ public class PlayerResources {
     }
     
     @GetMapping(value ="/{id}/conferirResposta")
-    public ResponseEntity<Boolean> conferirResposta(@PathVariable Long id, int opcao) throws ErroScoreException {
+    public ResponseEntity<Boolean> conferirResposta(@PathVariable Long id, Long opcao) throws ErroScoreException {
         boolean respostaCorreta = playerService.conferirResposta(id, opcao);
         
         return ResponseEntity.ok(respostaCorreta);
     }
 
     @PostMapping(value = "/{id}/gerarQuestion")
-    public ResponseEntity<String> gerarQuestionParaPlayer(@PathVariable Long id){
+    public ResponseEntity<Void> gerarQuestionParaPlayer(@PathVariable Long id){
         playerService.gerarQuestionParaPlayer(id);
-        return ResponseEntity.ok("Sucesso!");
+        return ResponseEntity.ok().build();
     }
     
     @DeleteMapping("/{id}/reset-quiz")

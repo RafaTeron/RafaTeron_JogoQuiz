@@ -11,6 +11,7 @@ import com.rafaelAbreu.JogoQuiz.entities.Answer;
 import com.rafaelAbreu.JogoQuiz.entities.Player;
 import com.rafaelAbreu.JogoQuiz.entities.Question;
 import com.rafaelAbreu.JogoQuiz.exceptions.ErroScoreException;
+import com.rafaelAbreu.JogoQuiz.repositories.AnswerRepository;
 import com.rafaelAbreu.JogoQuiz.repositories.PlayerRepository;
 import com.rafaelAbreu.JogoQuiz.repositories.QuestionRepository;
 
@@ -22,6 +23,9 @@ public class PlayerService {
 
 	@Autowired
 	private QuestionRepository questionRepository;
+
+	@Autowired
+	private AnswerRepository answerRepository;
 
 	public List<Player> findAll() {
 		return playerRepository.findAll();
@@ -73,21 +77,20 @@ public class PlayerService {
 		}
 	}
 
-	public boolean conferirResposta(Long id, int opcao) throws ErroScoreException {
+	public boolean conferirResposta(Long id, Long opcao) throws ErroScoreException {
 		Optional<Player> playerOptional = playerRepository.findById(id);
 
 		if (playerOptional.isPresent()) {
 			Player player = playerOptional.get();
-			List<Answer> answerList = player.getQuestion().get(0).getAnswers();
 
-			if (opcao > 0 && opcao <= answerList.size()) {
-				Answer answerEscolhida = answerList.get(opcao - 1);
+			Optional<Answer> answerOptional = answerRepository.findById(opcao);
+			Answer answerEscolhida = answerOptional.get();
 
-				if (answerEscolhida.getIsCorrect() == true) {
-					somarScore(player);
-					return true;
-				}
+			if (answerEscolhida.getIsCorrect() == true) {
+				somarScore(player);
+				return true;
 			}
+
 		}
 		return false;
 	}
