@@ -66,7 +66,7 @@ public class PlayerService {
 
 			if (verificarPlayerQuestionVazio(player)) {
 
-				if (limiteDeQuestionsRespondidas(player)) {
+				if (limiteDeQuestionsRespondidas(player.getId())) {
 					Question questionAleatoria = encontrarQuestionNaoRespondida(player);
 
 					adicionarPerguntaAoJogador(player, questionAleatoria);
@@ -108,7 +108,10 @@ public class PlayerService {
 		}
 	}
 
-	protected boolean limiteDeQuestionsRespondidas(Player player) {
+	public boolean limiteDeQuestionsRespondidas(Long id) {
+		Optional<Player> playerOptional = playerRepository.findById(id);
+		Player player = playerOptional.get();
+
 		List<String> questionRespondidas = player.getQuestionRespondidas();
 
 		if (questionRespondidas == null) {

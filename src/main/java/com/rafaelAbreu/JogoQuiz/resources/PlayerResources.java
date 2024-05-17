@@ -72,4 +72,10 @@ public class PlayerResources {
         playerService.resetarQuizPlayer(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/{id}/limitePerguntasRespondidas")
+    public ResponseEntity<Boolean> verificarLimitePerguntasRespondidas(@PathVariable Long id) {
+        boolean limiteAtingido = playerService.limiteDeQuestionsRespondidas(id);
+        return ResponseEntity.ok(limiteAtingido);
+    }
 }
