@@ -114,11 +114,8 @@ public class PlayerService {
 
 		List<String> questionRespondidas = player.getQuestionRespondidas();
 
-		if (questionRespondidas == null) {
-			return true;
-		}
 
-		if (questionRespondidas.size() < 10) {
+		if (questionRespondidas == null || questionRespondidas.size() < 10) {
 			return true;
 		}
 
@@ -126,8 +123,9 @@ public class PlayerService {
 	}
 
 	public void somarScore(Player player) throws ErroScoreException {
+		List<String> questionRespondidas = player.getQuestionRespondidas();
 
-		if (player.getPointScore() < 100) {
+		if (player.getPointScore() < 100 && questionRespondidas.size() < 10) {
 			player.setPointScore(player.getPointScore() + 10);
 
 			playerRepository.save(player);
