@@ -68,7 +68,7 @@ public class PlayerResources {
     }
     
     @DeleteMapping("/{id}/reset-quiz")
-    public ResponseEntity<String> resetQuizPlayer(@PathVariable Long id) {
+    public ResponseEntity<Void> resetQuizPlayer(@PathVariable Long id) {
         playerService.resetarQuizPlayer(id);
         return ResponseEntity.noContent().build();
     }

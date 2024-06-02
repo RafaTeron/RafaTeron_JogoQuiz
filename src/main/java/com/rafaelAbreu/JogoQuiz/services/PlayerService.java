@@ -123,9 +123,7 @@ public class PlayerService {
 	}
 
 	public void somarScore(Player player) throws ErroScoreException {
-		List<String> questionRespondidas = player.getQuestionRespondidas();
-
-		if (player.getPointScore() < 100 && questionRespondidas.size() < 10) {
+		if (player.getPointScore() < 100 ) {
 			player.setPointScore(player.getPointScore() + 10);
 
 			playerRepository.save(player);

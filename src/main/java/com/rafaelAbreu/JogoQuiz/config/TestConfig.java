@@ -45,19 +45,19 @@ public class TestConfig implements CommandLineRunner {
 
         questionRepository.saveAll(Arrays.asList(q1,q2));
 
-        Answer a1 = new Answer(null, "A) Oxigênio", q1, true);
-        Answer a2 = new Answer(null, "B) Silício", q1, false);
-        Answer a3 = new Answer(null, "C) Ferro", q1,false);
+        //Answer a1 = new Answer(null, "A) Oxigênio", q1, true);
+        //Answer a2 = new Answer(null, "B) Silício", q1, false);
+        //Answer a3 = new Answer(null, "C) Ferro", q1,false);
 
-        Answer a4 = new Answer(null, "A) Lionel Messi", q2, false);
-        Answer a5 = new Answer(null, "B) Cristiano Ronaldo", q2, false);
-        Answer a6 = new Answer(null, "C) Ronaldo Nazário", q2, true);
+        //Answer a4 = new Answer(null, "A) Lionel Messi", q2, false);
+        //Answer a5 = new Answer(null, "B) Cristiano Ronaldo", q2, false);
+        //Answer a6 = new Answer(null, "C) Ronaldo Nazário", q2, true);
 
-        List<Answer> op1 = answerRepository.saveAll(Arrays.asList(a1, a2, a3));
-        List<Answer> op2 = answerRepository.saveAll(Arrays.asList(a4, a5, a6));
+        //List<Answer> op1 = answerRepository.saveAll(Arrays.asList(a1, a2, a3));
+        //List<Answer> op2 = answerRepository.saveAll(Arrays.asList(a4, a5, a6));
 
-        q1.getAnswers().addAll(op1);
-        q2.getAnswers().addAll(op2);
+        //q1.getAnswers().addAll(op1);
+        //q2.getAnswers().addAll(op2);
 
     }
 

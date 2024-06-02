@@ -23,6 +23,7 @@ public class Answer implements Serializable {
     private Long id;
 
     private String answerText;
+    private String descricao;
     private boolean isCorrect;
 
     @JsonIgnore
@@ -34,9 +35,10 @@ public class Answer implements Serializable {
 
     }
 
-    public Answer(Long id, String answerText, Question question, boolean isCorrect) {
+    public Answer(Long id, String answerText, String descricao, Question question, boolean isCorrect) {
         this.id = id;
         this.answerText = answerText;
+        this.descricao = descricao;
         this.question = question;
         this.isCorrect = isCorrect;
     }
@@ -53,7 +55,15 @@ public class Answer implements Serializable {
         this.answerText = answerText;
     }
 
-    public Question getQuestion() {
+    public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public Question getQuestion() {
         return question;
     }
 
